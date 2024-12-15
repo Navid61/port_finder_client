@@ -48,3 +48,46 @@ export default tseslint.config({
   },
 })
 ```
+```text
+1. Set Up the Project
+Goal: Create a clean and functional environment to build your app.
+
+Task: Create a new Vite project with React and TypeScript.
+Use the command: npm create vite@latest project-name --template react-ts.
+Description: This initializes your project with Vite and sets it up for React development using TypeScript.
+
+2. Install Required Libraries
+Goal: Add React-Bootstrap for UI components and Bootstrap for styling.
+
+Task: Install dependencies using npm install react-bootstrap bootstrap.
+Description: React-Bootstrap provides pre-styled components, and Bootstrap offers global CSS styles.
+
+ Configure Bootstrap in the Project
+Goal: Ensure Bootstrap styles are applied globally.
+
+Task: Import Bootstrap CSS in main.tsx.
+Add import "bootstrap/dist/css/bootstrap.min.css"; in the file.
+Description: This makes sure all components use consistent styles provided by Bootstrap.
+
+4. Design the UI (Frontend Development)
+Goal: Create a user-friendly interface for port selection and filtering.
+
+Task: Create a PortFilter.tsx component with these features:
+A search box to filter ports by name.
+A dropdown menu to display available ports.
+A list to show selected ports.
+Buttons to remove selected ports.
+Description: This forms the core of the frontend, allowing users to interact with the port filter functionality.
+
+5. Update the Main App
+Goal: Integrate the PortFilter component into the main application.
+
+Task: Replace the content of App.tsx to render PortFilter.
+Description: This ensures the PortFilter component is the main feature of your app.
+
+6. Run and Test the Application
+Goal: Verify the app works as expected.
+
+Task: Run npm run dev and test in the browser.
+Try searching for ports, selecting ports, and removing them.
+Description: Ensures all UI functionality is working correctly and smoothly.
