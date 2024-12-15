@@ -1,11 +1,25 @@
 import React, { useState } from "react";
-import { Form, Dropdown, DropdownButton, Button } from "react-bootstrap";
+import {
+  Container,
+  Header,
+  SearchInput,
+  DropdownList,
+  DropdownItem,
+  SelectedPort,
+  RemoveButton,
+  NoResultsMessage,
+  LanguageSwitcher,
+} from "./styledPortFinder";
+import { useTranslation } from "react-i18next";
+
+
 
 interface Port {
   id: number;
   name: string;
 }
 
+// Mock data
 const ports: Port[] = [
   { id: 1, name: "Civitavecchia (Rome), Italy" },
   { id: 2, name: "Miami, United States" },
@@ -14,8 +28,10 @@ const ports: Port[] = [
 ];
 
 const PortFilter: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedPorts, setSelectedPorts] = useState<Port[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   const filteredPorts = ports.filter((port) =>
     port.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -31,63 +47,62 @@ const PortFilter: React.FC = () => {
     setSelectedPorts(selectedPorts.filter((port) => port.id !== portId));
   };
 
+  const handleLanguageChange = (language: string) => {
+    i18n.changeLanguage(language);
+  };
+
+  const simulateError = () => {
+    setError(t("error.networkFailure"));
+    setTimeout(() => setError(null), 3000); // Auto-clear error after 3 seconds
+  };
+
   return (
-    <div style={{ maxWidth: "400px", margin: "0 auto", padding: "20px" }}>
-      <Form.Group controlId="searchPorts">
-        <Form.Label>Search and Select Ports</Form.Label>
-        <Form.Control
-          type="text"
-          placeholder="Type to search ports..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </Form.Group>
-      <DropdownButton
-        id="dropdown-ports"
-        title="Available Ports"
-        className="mt-3"
+    <Container>
+      <Header>{t("title")}</Header>
+
+      <LanguageSwitcher
+        onChange={(e) => handleLanguageChange(e.target.value)}
+        defaultValue={i18n.language}
       >
+        <option value="en">English</option>
+        <option value="de">Deutsch</option>
+      </LanguageSwitcher>
+
+      {error && <p style={{ color: "red" }}>{error}</p>}
+
+      <SearchInput
+        type="text"
+        placeholder={t("placeholder.search")}
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+      />
+
+      <DropdownList>
         {filteredPorts.length > 0 ? (
           filteredPorts.map((port) => (
-            <Dropdown.Item key={port.id} onClick={() => handleSelect(port)}>
+            <DropdownItem key={port.id} onClick={() => handleSelect(port)}>
               {port.name}
-            </Dropdown.Item>
+            </DropdownItem>
           ))
         ) : (
-          <Dropdown.Item disabled>No ports found</Dropdown.Item>
+          <NoResultsMessage>{t("message.noResults")}</NoResultsMessage>
         )}
-      </DropdownButton>
-      <div className="mt-3">
-        <h5>Selected Ports:</h5>
-        {selectedPorts.length > 0 ? (
-          selectedPorts.map((port) => (
-            <div
-              key={port.id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: "5px",
-                padding: "5px",
-                border: "1px solid #ddd",
-                borderRadius: "4px",
-              }}
-            >
-              <span>{port.name}</span>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={() => handleRemove(port.id)}
-              >
-                Remove
-              </Button>
-            </div>
-          ))
-        ) : (
-          <p>No ports selected</p>
-        )}
+      </DropdownList>
+
+      <div>
+        <Header>{t("header.selectedPorts")}</Header>
+        {selectedPorts.map((port) => (
+          <SelectedPort key={port.id}>
+            <span>{port.name}</span>
+            <RemoveButton onClick={() => handleRemove(port.id)}>
+              {t("button.remove")}
+            </RemoveButton>
+          </SelectedPort>
+        ))}
       </div>
-    </div>
+
+      <button onClick={simulateError}>{t("button.simulateError")}</button>
+    </Container>
   );
 };
 
