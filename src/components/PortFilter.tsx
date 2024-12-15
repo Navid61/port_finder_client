@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Header,
@@ -11,27 +11,39 @@ import {
   LanguageSwitcher,
 } from "./styledPortFinder";
 import { useTranslation } from "react-i18next";
-
-
+import axios from "axios";
 
 interface Port {
   id: number;
   name: string;
 }
 
-// Mock data
-const ports: Port[] = [
-  { id: 1, name: "Civitavecchia (Rome), Italy" },
-  { id: 2, name: "Miami, United States" },
-  { id: 3, name: "Barcelona, Spain" },
-  { id: 4, name: "Sydney, Australia" },
-];
-
 const PortFilter: React.FC = () => {
   const { t, i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [ports, setPorts] = useState<Port[]>([]);
   const [selectedPorts, setSelectedPorts] = useState<Port[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  // Fetch ports from the backend
+  useEffect(() => {
+    const fetchPorts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get("http://localhost:5000/ports"); // Replace with your backend URL
+        setPorts(response.data);
+      } catch (err) {
+        console.error(err);
+        setError(t("error.networkFailure"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPorts();
+  }, [t]);
 
   const filteredPorts = ports.filter((port) =>
     port.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -49,11 +61,6 @@ const PortFilter: React.FC = () => {
 
   const handleLanguageChange = (language: string) => {
     i18n.changeLanguage(language);
-  };
-
-  const simulateError = () => {
-    setError(t("error.networkFailure"));
-    setTimeout(() => setError(null), 3000); // Auto-clear error after 3 seconds
   };
 
   return (
@@ -77,17 +84,21 @@ const PortFilter: React.FC = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <DropdownList>
-        {filteredPorts.length > 0 ? (
-          filteredPorts.map((port) => (
-            <DropdownItem key={port.id} onClick={() => handleSelect(port)}>
-              {port.name}
-            </DropdownItem>
-          ))
-        ) : (
-          <NoResultsMessage>{t("message.noResults")}</NoResultsMessage>
-        )}
-      </DropdownList>
+      {loading ? (
+        <p>{t("loading")}</p>
+      ) : (
+        <DropdownList>
+          {filteredPorts.length > 0 ? (
+            filteredPorts.map((port) => (
+              <DropdownItem key={port.id} onClick={() => handleSelect(port)}>
+                {port.name}
+              </DropdownItem>
+            ))
+          ) : (
+            <NoResultsMessage>{t("message.noResults")}</NoResultsMessage>
+          )}
+        </DropdownList>
+      )}
 
       <div>
         <Header>{t("header.selectedPorts")}</Header>
@@ -100,8 +111,6 @@ const PortFilter: React.FC = () => {
           </SelectedPort>
         ))}
       </div>
-
-      <button onClick={simulateError}>{t("button.simulateError")}</button>
     </Container>
   );
 };
