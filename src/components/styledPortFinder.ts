@@ -20,12 +20,23 @@ export const Header = styled.h5`
   color: #333;
 `;
 
-export const SearchInput = styled.input`
+export const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
+`;
+
+export const DropdownButton = styled.button`
   width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  margin-bottom: 15px;
+  background-color: #fff;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   &:focus {
     border-color: #007bff;
@@ -34,16 +45,23 @@ export const SearchInput = styled.input`
 `;
 
 export const DropdownList = styled.div`
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
   max-height: 200px;
   overflow-y: auto;
   border: 1px solid #ddd;
   border-radius: 4px;
   background-color: #fff;
-  margin-bottom: 10px;
+  z-index: 10;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 export const DropdownItem = styled.div`
   padding: 10px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
   border-bottom: 1px solid #f1f1f1;
 
@@ -53,6 +71,16 @@ export const DropdownItem = styled.div`
 
   &:last-child {
     border-bottom: none;
+  }
+
+  label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+  }
+
+  input {
+    margin-right: 10px;
   }
 `;
 
@@ -97,4 +125,18 @@ export const LanguageSwitcher = styled.select`
   border-radius: 4px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  cursor: pointer;
+`;
+
+export const SearchInput = styled.input`
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 5px;
+
+  &:focus {
+    border-color: #007bff;
+    outline: none;
+  }
 `;

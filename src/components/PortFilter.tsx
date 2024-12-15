@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Container,
   Header,
-  SearchInput,
+  DropdownContainer,
+  DropdownButton,
   DropdownList,
   DropdownItem,
   SelectedPort,
   RemoveButton,
   NoResultsMessage,
   LanguageSwitcher,
+  SearchInput,
 } from "./styledPortFinder";
 import { useTranslation } from "react-i18next";
 import axios from "axios";
 
 interface Port {
-  id: number;
+  _id: string;
   name: string;
 }
 
@@ -23,8 +25,10 @@ const PortFilter: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [ports, setPorts] = useState<Port[]>([]);
   const [selectedPorts, setSelectedPorts] = useState<Port[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   // Fetch ports from the backend
   useEffect(() => {
@@ -33,9 +37,9 @@ const PortFilter: React.FC = () => {
       setError(null);
       try {
         const response = await axios.get("http://localhost:5000/ports"); // Replace with your backend URL
-        setPorts(response.data);
+        setPorts(response.data); // Expecting response.data to match the received array
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching ports:", err);
         setError(t("error.networkFailure"));
       } finally {
         setLoading(false);
@@ -45,18 +49,48 @@ const PortFilter: React.FC = () => {
     fetchPorts();
   }, [t]);
 
+  // Close dropdown when clicking outside or pressing Escape
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false);
+      }
+    };
+
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, []);
+
   const filteredPorts = ports.filter((port) =>
     port.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const handleSelect = (port: Port) => {
-    if (!selectedPorts.find((selected) => selected.id === port.id)) {
+    // Add or remove the port from the selectedPorts array
+    const isSelected = selectedPorts.find((selected) => selected._id === port._id);
+
+    if (isSelected) {
+      // If already selected, remove it
+      setSelectedPorts(selectedPorts.filter((p) => p._id !== port._id));
+    } else {
+      // If not selected, add it
       setSelectedPorts([...selectedPorts, port]);
     }
   };
 
-  const handleRemove = (portId: number) => {
-    setSelectedPorts(selectedPorts.filter((port) => port.id !== portId));
+  const handleRemove = (portId: string) => {
+    setSelectedPorts(selectedPorts.filter((port) => port._id !== portId));
   };
 
   const handleLanguageChange = (language: string) => {
@@ -77,35 +111,54 @@ const PortFilter: React.FC = () => {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      <SearchInput
-        type="text"
-        placeholder={t("placeholder.search")}
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <DropdownContainer ref={dropdownRef}>
+        <DropdownButton onClick={() => setDropdownOpen(!dropdownOpen)}>
+          Ports
+          <span>{dropdownOpen ? "▲" : "▼"}</span>
+        </DropdownButton>
 
-      {loading ? (
-        <p>{t("loading")}</p>
-      ) : (
-        <DropdownList>
-          {filteredPorts.length > 0 ? (
-            filteredPorts.map((port) => (
-              <DropdownItem key={port.id} onClick={() => handleSelect(port)}>
-                {port.name}
-              </DropdownItem>
-            ))
-          ) : (
-            <NoResultsMessage>{t("message.noResults")}</NoResultsMessage>
-          )}
-        </DropdownList>
-      )}
+        {dropdownOpen && (
+          <DropdownList>
+            {loading ? (
+              <p>{t("loading")}</p>
+            ) : (
+              <>
+                <SearchInput
+                  type="text"
+                  placeholder={t("placeholder.search")}
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+                {filteredPorts.length > 0 ? (
+                  filteredPorts.map((port) => (
+                    <DropdownItem key={port._id}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          checked={!!selectedPorts.find(
+                            (selected) => selected._id === port._id
+                          )}
+                          onChange={() => handleSelect(port)} // Individual checkbox state handler
+                        />
+                        {port.name}
+                      </label>
+                    </DropdownItem>
+                  ))
+                ) : (
+                  <NoResultsMessage>{t("message.noResults")}</NoResultsMessage>
+                )}
+              </>
+            )}
+          </DropdownList>
+        )}
+      </DropdownContainer>
 
       <div>
         <Header>{t("header.selectedPorts")}</Header>
         {selectedPorts.map((port) => (
-          <SelectedPort key={port.id}>
+          <SelectedPort key={port._id}>
             <span>{port.name}</span>
-            <RemoveButton onClick={() => handleRemove(port.id)}>
+            <RemoveButton onClick={() => handleRemove(port._id)}>
               {t("button.remove")}
             </RemoveButton>
           </SelectedPort>
