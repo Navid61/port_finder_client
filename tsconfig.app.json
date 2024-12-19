@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "types": [
+      "vite/client", // If you are using vite features like import.meta.env
+     
+    ],
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2020",
     "useDefineForClassFields": true,
