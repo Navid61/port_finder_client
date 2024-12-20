@@ -24,9 +24,15 @@ const config: Config = {
     "setup-tests.ts",
     "vite-env.d.ts"
   ],
-  "transform": {
-    "^.+\\.tsx?$": "ts-jest"
-  }
+   transform: {
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+         tsconfig:'tsconfig.test.json'
+      },
+    ],
+  },
+  
 };
 
 export default config;
