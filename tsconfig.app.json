@@ -1,6 +1,10 @@
 {
   "compilerOptions": {
-    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    },
+    "types": ["vite/client", "jest"], // Types for Vite and Jest
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -12,7 +16,7 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "node", // Change "bundler" to "node" for Jest compatibility
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
@@ -26,5 +30,16 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src/**/*", "__mocks__", "**/*.test.ts", "**/*.test.tsx"]
+  "include": [
+    "src/**/*",
+    "__mocks__", // Mock files for testing
+    "**/*.test.ts", // Test files
+    "**/*.test.tsx",
+    "vite.config.ts" // Vite config for TypeScript compatibility
+  ],
+  "exclude": [
+    "node_modules", // Exclude dependencies
+    "dist", // Exclude build output directory
+    "coverage" // Exclude test coverage reports
+  ]
 }

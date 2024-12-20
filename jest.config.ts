@@ -7,6 +7,7 @@ const config: Config = {
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/__mocks__/fileMock.js',
+   
   },
   "collectCoverageFrom": [
     "src/**/*.{js,jsx,ts,tsx}",
@@ -28,10 +29,13 @@ const config: Config = {
     '^.+\\.(ts|tsx)$': [
       'ts-jest',
       {
-         tsconfig:'tsconfig.test.json'
+         tsconfig:'tsconfig.test.json',
+         isolatedModules: true,
+         
       },
     ],
   },
+
   
 };
 

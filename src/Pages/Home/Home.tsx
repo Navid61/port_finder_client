@@ -1,15 +1,14 @@
-/* Home.tsx filenpm install */
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import DropDownMenu from "../../components/DropDownMenu/DropDownMenu";
+import DropDownMenu from "@/components/DropDownMenu/DropDownMenu";
 import {
   Container,
   Header,
   SelectedPort,
   RemoveButton,
   LanguageSwitcher,
-} from "../../styles/portFilterStyles";
+} from "@/styles/portFilterStyles";
 import { useTranslation } from "react-i18next";
 
 interface Port {
