@@ -22,7 +22,7 @@ const config: Config = {
   ],
   "coveragePathIgnorePatterns": [
     "/node_modules/",
-    "setup-tests.ts",
+    "jest-setup.ts",
     "vite-env.d.ts"
   ],
    transform: {

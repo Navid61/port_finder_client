@@ -6,7 +6,7 @@ import {
   DropdownItem,
   NoResultsMessage,
   SearchInput,
-} from "@/DropDownMenu.styles";
+} from "./DropDownMenu.styles";
 
 interface DropDownMenuProps {
   items: { _id: string; name: string }[]; // Array of items
