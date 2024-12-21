@@ -91,3 +91,39 @@ Goal: Verify the app works as expected.
 Task: Run npm run dev and test in the browser.
 Try searching for ports, selecting ports, and removing them.
 Description: Ensures all UI functionality is working correctly and smoothly.
+```
+
+### If you want to add a new port to the list, you can run this command in your terminal
+
+### Successful addition (201):
+```json
+{
+  "_id": "64f7c8d6b67f423f8a123456",
+  "name": "Bandar Abbas",
+  "__v": 0
+}
+```
+
+### Validation error (400):
+```json
+{
+  "error": "Name is required"
+}
+```
+
+### Duplicate name (409):
+```json
+{
+  "error": "Port name already exists"
+}
+```
+### Server error (500):
+```json
+{
+  "error": "Failed to add port"
+}
+```
+
+```shell
+ curl -X POST -H "Content-Type: application/json" -d '{"name":"Bandar Abbas"}' http://localhost:5000/ports
+```
