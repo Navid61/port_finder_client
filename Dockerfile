@@ -4,6 +4,16 @@ FROM node:20 AS build
 # Set working directory
 WORKDIR /usr/src/app
 
+# Install Git (required for submodules)
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Copy .git and submodule configuration files
+COPY .git .git
+COPY .gitmodules .gitmodules
+
+# Clone the submodules
+RUN git submodule update --init --recursive
+
 # Copy package.json and package-lock.json
 COPY package.json package-lock.json ./
 
