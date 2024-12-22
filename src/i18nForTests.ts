@@ -1,11 +1,12 @@
-// src/i18n.ts
+// src/i18nForTests.ts
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 
-const resources = {
+// Test-specific resources for translations
+const testResources = {
   en: {
     translation: {
-      loading: "Laden...",
+    
       title: "Search and Select Ports",
       placeholder: {
         search: "Type to search ports...",
@@ -27,7 +28,7 @@ const resources = {
   },
   de: {
     translation: {
-      loading: "Laden...",
+
       title: "Häfen suchen und auswählen",
       placeholder: {
         search: "Geben Sie ein, um Häfen zu suchen...",
@@ -49,13 +50,16 @@ const resources = {
   },
 };
 
+// Initialize i18n for testing
 i18n.use(initReactI18next).init({
-  resources,
-  lng: "en", // Default language
-  fallbackLng: "en", // Fallback language
-  interpolation: {
-    escapeValue: false, // React already escapes values
-  },
-});
+    resources: testResources,
+    lng: "en",
+    fallbackLng: "en",
+    debug: false,
+    interpolation: {
+      escapeValue: false,
+    },
+  });
+  
 
 export default i18n;

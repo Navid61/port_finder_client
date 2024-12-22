@@ -4,7 +4,7 @@ import Container from "react-bootstrap/Container";
 import ErrorBoundary from "./utils/ErrorBoundary";
 
 // Lazy load the Home component
-const Home = React.lazy(() => import("./Pages/Home/Home"));
+const Home = React.lazy(() => import("./Pages/Home"));
 
 const App: React.FC = () => {
   return (
