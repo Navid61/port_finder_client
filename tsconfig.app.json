@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"] // Map '@' to 'src'
+    },
     "types": ["vite/client", "jest"],
     "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
