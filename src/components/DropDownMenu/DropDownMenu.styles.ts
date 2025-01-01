@@ -18,7 +18,7 @@ export const DropdownButton = styled.button`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: black;
+  color: black;   // Arrow color changed.
   &:focus {
     border-color: #007bff;
     outline: none;
