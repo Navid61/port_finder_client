@@ -4,7 +4,7 @@ export const DropdownContainer = styled.div`
   position: relative;
   display: inline-block;
   width: 100%;
-  border:1px solid gray;
+  border: 1px solid gray;
 `;
 
 export const DropdownButton = styled.button`
@@ -18,7 +18,7 @@ export const DropdownButton = styled.button`
   display: flex;
   justify-content: space-between;
   align-items: center;
-color:black;
+  color: black;
   &:focus {
     border-color: #007bff;
     outline: none;
